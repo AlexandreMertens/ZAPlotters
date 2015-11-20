@@ -67,5 +67,6 @@ plt.xticks([0.5, 1.5, 2.5, 3], ['MSSM-like', 'im2HDM', 'im2HDM', ''], fontsize=t
 plt.yticks([0,125,500], fontsize=txt_size)
 plt.ylabel('m [GeV/$c^2$]', fontsize=txt_size)
 
+plt.subplots_adjust(left=0.15, right=0.9, top=0.9, bottom=0.15)
 #show()
 plt.savefig("hierarchies.png")

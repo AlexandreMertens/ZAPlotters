@@ -44,7 +44,7 @@ void DrawThisTH2Limit(TH2* h2){
   pave2->SetTextAlign(12);
   pave2->SetTextFont(52);
   pave2->SetTextSize(0.04);
-  //pave2->AddText("Preliminary");
+  pave2->AddText("Preliminary");
 
   TPaveText *pave3 = new TPaveText(0.5604027,0.951049,0.864094,0.9807692,"brNDC");;
   pave3->SetBorderSize(0);
@@ -60,7 +60,7 @@ void DrawThisTH2Limit(TH2* h2){
   framework2d->GetXaxis()->SetTitle("M_{H} (GeV)");
   framework2d->GetYaxis()->SetTitle("tan #beta");
   framework2d->GetYaxis()->SetTitleOffset(1.42);
-  //framework2d->GetZaxis()->SetTitle("Observed Limit");
+  framework2d->GetZaxis()->SetTitle("#mu = #sigma_{excl} / #sigma_{TH}");
   framework2d->Draw("");
 
 
@@ -146,7 +146,7 @@ void Combined_plot(){
   TH2D* h_obs = f->Get("h24_lt");
   TH2D* h_exp = f->Get("h22_lt");
 
-  TFile* f2 = new TFile("type2.root");
+  TFile* f2 = new TFile("type1.root");
   TH2D* h_ggA = f2->Get("xs_ggA");
   TH2D* h_AZH = f2->Get("br_AZH");
   TH2D* h_Hbb = f2->Get("br_Hbb");
@@ -179,8 +179,47 @@ void Combined_plot(){
   TH2D* mu_exp_histo = g_exp->GetHistogram();
 
   DrawThisTH2Limit(mu_obs_histo);
+  mu_obs_histo->GetZaxis()->SetTitle("#mu = #sigma_{excl} / #sigma_{TH}");
   TGraph* g_exp_excl = getContour(mu_exp_histo, C, 3, 7);
   TGraph* g_obs_excl = getContour(mu_obs_histo, C, 3, 1);
+
+  
+  std::cout << "exp excl: " << g_exp_excl->GetN() << std::endl;
+
+  std::cout << "obs excl: " << g_obs_excl->GetN() << std::endl;
+
+  Double_t x_obs[20],y_obs[20];
+  Double_t x_exp[20],y_exp[20];
+
+  std::cout << "mH obs = ";
+  for (int i=0; i < g_obs_excl->GetN(); i++){
+    g_obs_excl->GetPoint(i,x_obs[i],y_obs[i]);
+    std::cout << x_obs[i] << ", ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "tb obs = ";
+  for (int i=0; i < g_obs_excl->GetN(); i++){
+    g_obs_excl->GetPoint(i,x_obs[i],y_obs[i]);
+    std::cout << y_obs[i] << ", ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "mH exp = ";
+  for (int i=0; i < g_exp_excl->GetN(); i++){
+    g_exp_excl->GetPoint(i,x_exp[i],y_exp[i]);
+    std::cout << x_exp[i] << ", ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "tb exp = ";
+  for (int i=0; i < g_exp_excl->GetN(); i++){
+    g_exp_excl->GetPoint(i,x_exp[i],y_exp[i]);
+    std::cout << y_exp[i] << ", ";
+  }
+  std::cout << std::endl;
+
+
 
   C->Modified();
   C->Update();

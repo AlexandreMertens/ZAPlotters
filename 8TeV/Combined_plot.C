@@ -54,7 +54,7 @@ void DrawThisTH2Limit(TH2* h2){
   pave3->SetTextSize(0.04);
   pave3->AddText("19.8 fb^{-1} (8 TeV)");
 
-  framework2d = new TH2F("Graph","Graph",1,145,600,1,0.5,10);
+  framework2d = new TH2F("Graph","Graph",1,145,260,1,0.5,3);
   framework2d->SetStats(false);
   framework2d->SetTitle("");
   framework2d->GetXaxis()->SetTitle("M_{H} (GeV)");
@@ -138,8 +138,8 @@ void Combined_plot(){
   gStyle->SetNdivisions(505);
   gStyle->SetLabelSize(0.04,"XYZ");
 
-  double tanB_step = 0.1;
-  double mH_step = 5; 
+  double tanB_step = 0.02;
+  double mH_step = 2; 
 
   TFile* f = new TFile("Limit_XS_eff.root");
 
@@ -153,11 +153,17 @@ void Combined_plot(){
 
   int n=0;
 
-  TGraph2D *g_exp = new TGraph2D(100);
-  TGraph2D *g_obs = new TGraph2D(100);
+  TH2D* mu_exp_base = new TH2D("mu_exp_histo","mu_exp_histo",230,145,260, 250, 0.5, 3);
+  TH2D* mu_obs_base = new TH2D("mu_obs_histo","mu_obs_histo",230,145,260, 250, 0.5, 3);
 
-  for (int mH = 145; mH <= 600; mH+=mH_step){
-      for (double tanB = 0.5; tanB < 10; tanB+=tanB_step){  
+  TGraph2D *g_exp = new TGraph2D(100);
+  g_exp->SetHistogram(mu_exp_base);
+  TGraph2D *g_obs = new TGraph2D(100);
+  g_obs->SetHistogram(mu_obs_base);
+
+  for (double mH = 145; mH <= 260; mH+=mH_step){
+      std::cout << "mH : " << mH << std::endl;
+      for (double tanB = 0.5; tanB < 3; tanB+=tanB_step){  
           double mA = mH+100;
           double limit_obs = (1/1000.0) * h_obs->Interpolate(mA,mH);
           double limit_exp = (1/1000.0) * h_exp->Interpolate(mA,mH);
@@ -188,8 +194,8 @@ void Combined_plot(){
 
   std::cout << "obs excl: " << g_obs_excl->GetN() << std::endl;
 
-  Double_t x_obs[20],y_obs[20];
-  Double_t x_exp[20],y_exp[20];
+  Double_t x_obs[2000],y_obs[2000];
+  Double_t x_exp[2000],y_exp[2000];
 
   std::cout << "mH obs = ";
   for (int i=0; i < g_obs_excl->GetN(); i++){
